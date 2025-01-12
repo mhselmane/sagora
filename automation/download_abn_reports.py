@@ -4,9 +4,12 @@ import zipfile
 from decouple import config as env
 
 
-
-
-def download_abn_reports(hostname, port, username, key_file, remote_path, local_path):
+def download_abn_reports(hostname="mft1.abnamroclearing.com",
+                         port=22,
+                         username="3818",
+                         key_file="/home/deployer/.ssh/id_sagora",
+                         remote_path="/outgoing/",
+                         local_path="/home/deployer/reports/ABN_reports"):
     """
     Download ABN reports from the specified SFTP server.
 
@@ -17,7 +20,6 @@ def download_abn_reports(hostname, port, username, key_file, remote_path, local_
     c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     c.connect(hostname=hostname, port=port, username=username, pkey=rsa_key)
     sftp = c.open_sftp()
-
 
     ls_remote_path = sftp.listdir(remote_path)
 
@@ -74,13 +76,11 @@ def download_abn_reports(hostname, port, username, key_file, remote_path, local_
 
 
 if __name__ == '__main__':
-
-    hostname =env("SFTP_HOST", "mft1.abnamroclearing.com")
-    port =env("SFTP_PORT", 22)
+    hostname = env("SFTP_HOST", "mft1.abnamroclearing.com")
+    port = env("SFTP_PORT", 22)
     username = env("SFTP_USER", "3818")
     key_file = env("SAGORA_PKFILE", "/home/deployer/.ssh/id_sagora")
     remote_path = "/outgoing/"
     local_path = env("ABN_REPORT_PATH", "/home/deployer/reports/ABN_reports")
     # local_path = "/home/deployer/test_folder"
     download_abn_reports(hostname, port, username, key_file, remote_path, local_path)
-
